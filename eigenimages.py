@@ -1,5 +1,5 @@
+import numpy as np
 import ipywidgets as ipw
-from pylab import *
 
 def classify_image(tst,trn,k):
     """  Input: 
@@ -10,21 +10,21 @@ def classify_image(tst,trn,k):
     n,T = tst.shape
     m = trn.shape[1]
     # compute projection matrices:
-    P = zeros((n,n,10))
+    P = np.zeros((n,n,10))
     for i in range(10):
-        U,S,V = svd(trn[:,:,i])
+        U,S,V = np.linalg.svd(trn[:,:,i])
         U1 = U[:,0:k]
-        P[:,:,i] = dot(U1,U1.T)
+        P[:,:,i] = np.dot(U1,U1.T)
 
     # find errors:
-    sqerr = zeros((10,T))
+    sqerr = np.zeros((10,T))
     for i in range(10):
-        sqerr[i,:] = sum((tst - dot(squeeze(P[:,:,i]),tst))**2,0)
+        sqerr[i,:] = np.sum((tst - np.dot(np.squeeze(P[:,:,i]),tst))**2,0)
 
-    return argmin(sqerr,0)
+    return np.argmin(sqerr,0)
 
 def linear_combo(a1,a2,a3,digit,trn):
-    U,S,V = svd(trn[:,:,digit])
+    U,S,V = np.linalg.svd(trn[:,:,digit])
     U1 = U[:,0]
     U2 = U[:,1]
     U3 = U[:,2]
@@ -38,7 +38,7 @@ def vec2mat(v):
     v = v/max(v)
     # shift to [-0.5,0.5]:
     v = v - 0.5
-    return reshape(v,(16,16))
+    return np.reshape(v,(16,16))
 
 def return_widgets():
     c1=ipw.FloatSlider(
